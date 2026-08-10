@@ -12,6 +12,9 @@ __pycache__/
 *.db3
 *.mcap
 
+# Trained weights
+*.pt
+
 # IDE / editor
 .vscode/
 .idea/

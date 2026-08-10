@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-package_name = 'mapping_slam'
+package_name = 'airmouse_mapping'
 
 setup(
     name=package_name,
