@@ -24,6 +24,8 @@ setup(
     },
     entry_points={
         'console_scripts': [
+            'scan_publisher = airmouse_mapping.scan_publisher:main',
+            'robot_motion = airmouse_mapping.robot_motion:main',
         ],
     },
 )
