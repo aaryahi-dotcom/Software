@@ -1,0 +1,25 @@
+detector_node:
+  ros__parameters:
+    # Path to YOLOv8 weights — pretrained COCO, class 0 = person
+    model_path: "yolov8n.pt"
+
+    # Minimum confidence to keep a detection
+    confidence_threshold: 0.45
+
+    # COCO class ID for "person"
+    person_class_id: 0
+
+    # Detection must persist this many consecutive frames to be published
+    temporal_window: 3
+
+    # ---- Camera source (prototype: webcam) ----
+    # Set use_camera_topic to true when switching to real camera driver
+    use_camera_topic: false
+    camera_index: 0
+    camera_topic: "/camera/color/image_raw"
+
+    # Detection publish rate when using webcam directly (Hz)
+    publish_rate: 10.0
+
+    # IoU threshold for cross-frame matching
+    iou_match_threshold: 0.3
