@@ -1,0 +1,173 @@
+<?xml version="1.0"?>
+<robot name="airmouse_c">
+
+  <!-- ================= BASE LINK ================= -->
+  <!-- This is the whole drone body: frame, cage, battery, avionics, sensors —
+       everything EXCEPT the 4 spinning motor/prop assemblies.
+       Mass = 3.521 kg total minus 4 rotors (0.067 kg each) = 3.253 kg -->
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <!-- This points at the STL you exported from KittyCAD in Step 2 -->
+        <mesh filename="package://airmouse_c/meshes/frame.stl" scale="0.001 0.001 0.001"/>
+        <!-- scale 0.001 assumes KittyCAD exported in millimeters and URDF wants meters.
+             If your drone looks 1000x too big or too small in simulation, this is the first
+             thing to fix — try scale="1 1 1" instead. -->
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="package://airmouse_c/meshes/frame.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0.0044 -0.0003 -0.0028" rpy="0 0 0"/>
+      <mass value="3.253"/>
+      <inertia ixx="0.018" ixy="0.0" ixz="0.0" iyy="0.018" iyz="0.0" izz="0.013"/>
+    </inertial>
+  </link>
+
+  <!-- ================= ROTOR 1 : Front-Right, CW ================= -->
+  <link name="rotor_1">
+    <visual>
+      <geometry>
+        <cylinder radius="0.1016" length="0.01"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.1016" length="0.01"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.067"/>
+      <inertia ixx="0.000173" ixy="0.0" ixz="0.0" iyy="0.000173" iyz="0.0" izz="0.000346"/>
+    </inertial>
+  </link>
+  <joint name="base_to_rotor_1" type="continuous">
+    <parent link="base_link"/>
+    <child link="rotor_1"/>
+    <origin xyz="0.1093 0.1093 0.0" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+
+  <!-- ================= ROTOR 2 : Rear-Left, CW ================= -->
+  <link name="rotor_2">
+    <visual>
+      <geometry>
+        <cylinder radius="0.1016" length="0.01"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.1016" length="0.01"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.067"/>
+      <inertia ixx="0.000173" ixy="0.0" ixz="0.0" iyy="0.000173" iyz="0.0" izz="0.000346"/>
+    </inertial>
+  </link>
+  <joint name="base_to_rotor_2" type="continuous">
+    <parent link="base_link"/>
+    <child link="rotor_2"/>
+    <origin xyz="-0.1093 -0.1093 0.0" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+
+  <!-- ================= ROTOR 3 : Front-Left, CCW ================= -->
+  <link name="rotor_3">
+    <visual>
+      <geometry>
+        <cylinder radius="0.1016" length="0.01"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.1016" length="0.01"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.067"/>
+      <inertia ixx="0.000173" ixy="0.0" ixz="0.0" iyy="0.000173" iyz="0.0" izz="0.000346"/>
+    </inertial>
+  </link>
+  <joint name="base_to_rotor_3" type="continuous">
+    <parent link="base_link"/>
+    <child link="rotor_3"/>
+    <origin xyz="-0.1093 0.1093 0.0" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+
+  <!-- ================= ROTOR 4 : Rear-Right, CCW ================= -->
+  <link name="rotor_4">
+    <visual>
+      <geometry>
+        <cylinder radius="0.1016" length="0.01"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.1016" length="0.01"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.067"/>
+      <inertia ixx="0.000173" ixy="0.0" ixz="0.0" iyy="0.000173" iyz="0.0" izz="0.000346"/>
+    </inertial>
+  </link>
+  <joint name="base_to_rotor_4" type="continuous">
+    <parent link="base_link"/>
+    <child link="rotor_4"/>
+    <origin xyz="0.1093 -0.1093 0.0" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+
+  <!-- ================= SENSOR FRAMES ================= -->
+  <!-- These have no visual/collision geometry — they're just reference frames
+       so sensor plugins (added later) publish data at the correct pose,
+       and your ROS nodes (SLAM, YOLO, etc.) see the right frame_ids now. -->
+
+  <link name="lidar_link"/>
+  <joint name="base_to_lidar" type="fixed">
+    <parent link="base_link"/>
+    <child link="lidar_link"/>
+    <origin xyz="0 0 0.090" rpy="0 0 0"/>
+  </joint>
+
+  <link name="rgbd_link"/>
+  <joint name="base_to_rgbd" type="fixed">
+    <parent link="base_link"/>
+    <child link="rgbd_link"/>
+    <origin xyz="0.100 0 0.020" rpy="0 0 0"/>
+  </joint>
+
+  <link name="thermal_link"/>
+  <joint name="base_to_thermal" type="fixed">
+    <parent link="base_link"/>
+    <child link="thermal_link"/>
+    <origin xyz="0.100 0 0.015" rpy="0 0 0"/>
+  </joint>
+
+  <link name="optical_flow_link"/>
+  <joint name="base_to_optical_flow" type="fixed">
+    <parent link="base_link"/>
+    <child link="optical_flow_link"/>
+    <origin xyz="0 0 -0.050" rpy="0 1.5708 0"/> <!-- facing straight down -->
+  </joint>
+
+  <link name="rangefinder_link"/>
+  <joint name="base_to_rangefinder" type="fixed">
+    <parent link="base_link"/>
+    <child link="rangefinder_link"/>
+    <origin xyz="0 0.010 -0.050" rpy="0 1.5708 0"/> <!-- facing straight down -->
+  </joint>
+
+  <link name="imu_link"/>
+  <joint name="base_to_imu" type="fixed">
+    <parent link="base_link"/>
+    <child link="imu_link"/>
+    <origin xyz="0 0 0.020" rpy="0 0 0"/>
+  </joint>
+
+</robot>
