@@ -17,17 +17,16 @@ class MissionManager(Node):
             10
         )
 
+        self.return_publisher = self.create_publisher(
+            String,
+            '/return_command',
+            10
+        )
+
         self.survivor_subscriber = self.create_subscription(
             String,
             '/survivor_detected',
             self.survivor_callback,
-            10
-        )
-
-        self.return_subscriber = self.create_subscription(
-            String,
-            '/return_to_entry',
-            self.return_callback,
             10
         )
 
@@ -48,6 +47,7 @@ class MissionManager(Node):
         self.start_mission()
 
     def publish_status(self):
+
         message = String()
 
         message.data = (
@@ -58,11 +58,17 @@ class MissionManager(Node):
         self.status_publisher.publish(message)
 
     def start_mission(self):
+
         self.state = 'EXPLORING'
-        self.get_logger().info('Mission State: EXPLORING')
+
+        self.get_logger().info(
+            'Mission State: EXPLORING'
+        )
 
     def survivor_callback(self, message):
+
         if self.state == 'EXPLORING':
+
             self.survivor_count += 1
             self.state = 'SURVIVOR_FOUND'
 
@@ -71,28 +77,45 @@ class MissionManager(Node):
                 f'{self.survivor_count}'
             )
 
-    def return_callback(self, message):
-        if self.state in ['EXPLORING', 'SURVIVOR_FOUND']:
-            self.state = 'RETURNING'
-            self.get_logger().info(
-                'Mission State: RETURNING'
-            )
+            self.return_to_entry()
+
+    def return_to_entry(self):
+
+        self.state = 'RETURNING'
+
+        command = String()
+        command.data = 'RETURN'
+
+        self.return_publisher.publish(command)
+
+        self.get_logger().info(
+            'Mission State: RETURNING'
+        )
+
+        self.get_logger().info(
+            'Return command sent'
+        )
 
     def complete_callback(self, message):
+
         if self.state == 'RETURNING':
+
             self.state = 'COMPLETE'
+
             self.get_logger().info(
                 'Mission State: COMPLETE'
             )
 
 
 def main(args=None):
+
     rclpy.init(args=args)
 
     node = MissionManager()
 
     try:
         rclpy.spin(node)
+
     except KeyboardInterrupt:
         pass
 
