@@ -21,3 +21,11 @@ __pycache__/
 
 # OS files
 .DS_Store
+
+# Python / ROS generated files
+**/__pycache__/
+*.pyc
+*.egg-info/
+build/
+install/
+log/
